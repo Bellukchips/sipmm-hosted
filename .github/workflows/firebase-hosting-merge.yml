@@ -19,8 +19,8 @@ jobs:
         run: flutter pub get
       - name: "Build Runner"
         run: flutter pub run build_runner build --delete-conflicting-outputs
-      - name: "Build Web App"
-        run: flutter build web
+      - name: "Build Web App Release and Rendered Canvas Kit"
+        run: flutter build web --web-renderer canvaskit --release
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

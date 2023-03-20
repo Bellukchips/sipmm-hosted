@@ -112,33 +112,3 @@ void main() async {
     ),
   ], child: const App()));
 }
-
-// void main() {
-//   runApp( const MaterialApp(
-//     home: TestHome(),
-//   ));
-// }
-
-// class TestHome extends StatefulWidget {
-//   const TestHome({super.key});
-
-//   @override
-//   State<TestHome> createState() => _TestHomeState();
-// }
-
-// class _TestHomeState extends State<TestHome> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Column(
-//         children: [
-//           TextFormField(),
-//           const SizedBox(
-//             height: 100,
-//           ),
-//           TextFormField(),
-//         ],
-//       ),
-//     );
-//   }
-// }
