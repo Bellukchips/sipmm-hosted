@@ -65,9 +65,16 @@ class _BodyAuthPageState extends State<BodyAuthPage> {
                                     fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
-                              const _EmailForm(),
-                              const _PasswordForm(),
-                              TextFormField(),
+                              const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 25, left: 20, right: 20),
+                                child: _EmailForm(),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(
+                                    top: 25, left: 20, right: 20),
+                                child: _PasswordForm(),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     top: 25, left: 20, right: 20),
@@ -202,14 +209,13 @@ class _PasswordForm extends StatelessWidget {
               borderSide: BorderSide(color: ColorApp.primaryColor),
             ),
           ),
-          onChanged: (value) => context
-              .read<LoginBloc>()
-              .add(LoginEvent.passwordChanged(value)),
+          onChanged: (value) =>
+              context.read<LoginBloc>().add(LoginEvent.passwordChanged(value)),
           validator: (value) =>
               context.read<LoginBloc>().state.password.value.fold(
                   (l) => l.maybeMap(
                         orElse: () => null,
-                        invalidPassword: (value) => 'Invalid Password' ,
+                        invalidPassword: (value) => 'Invalid Password',
                         empty: (value) => 'Cannot be empty',
                       ),
                   (r) => null),
