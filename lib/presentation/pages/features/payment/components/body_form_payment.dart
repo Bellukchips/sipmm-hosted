@@ -243,216 +243,329 @@ class _ImageFormPaymentState extends State<ImageFormPayment> {
   XFile? selectImage;
   List<PlatformFile>? _paths;
   Uint8List? bytes;
+  WebFileModel? webFileModel;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SavePaymentBloc, SavePaymentState>(
       builder: (context, state) {
-        if (!kIsWeb) {
-          return selectImage == null
-              ? Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    shape: BoxShape.rectangle,
-                  ),
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    alignment: FractionalOffset.center,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: MaterialButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+        return ResponsiveBuilder(
+          builder: (context, sizingInformation) {
+            if (sizingInformation.deviceScreenType ==
+                DeviceScreenType.desktop) {
+              return _paths == null
+                  ? Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        shape: BoxShape.rectangle,
                       ),
-                      onPressed: () async {
-                        selectImage = await UtilsApp.pickImageFromGallery();
-                        setState(() {
-                          //update UI
-                        });
-                        if (selectImage != null) {
-                          // ignore: use_build_context_synchronously
-                          context.read<SavePaymentBloc>().add(
-                              SavePaymentEvent.imageChangedMobile(
-                                  File(selectImage!.path)));
-                        }
-                      },
                       child: Container(
-                        height: 50,
-                        width: 180,
+                        height: 200,
+                        width: double.infinity,
                         alignment: FractionalOffset.center,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: ColorApp.primaryColor),
-                        child: Text(
-                          Strings.uploadBuktiPembayaran,
-                          style: FontApp.primaryStyle
-                              .copyWith(color: Colors.white),
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(20),
+                          shape: BoxShape.rectangle,
+                        ),
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          onPressed: () async {
+                            _paths = await UtilsApp.pickFileForWeb();
+                            setState(() {});
+                            if (_paths != null) {
+                              setState(() {
+                                bytes = _paths!.first.bytes;
+                              });
+                              // ignore: use_build_context_synchronously
+                              context.read<SavePaymentBloc>().add(
+                                  SavePaymentEvent.imageChangedWeb(bytes!));
+                            }
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 180,
+                            alignment: FractionalOffset.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: ColorApp.primaryColor),
+                            child: Text(
+                              Strings.uploadBuktiPembayaran,
+                              style: FontApp.primaryStyle
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                )
-              : Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                        image: FileImage(File(selectImage!.path)),
-                        fit: BoxFit.cover),
-                    shape: BoxShape.rectangle,
-                  ),
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    alignment: FractionalOffset.center,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: MaterialButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                    )
+                  : Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                            image: MemoryImage(_paths!.first.bytes!),
+                            fit: BoxFit.cover),
+                        shape: BoxShape.rectangle,
                       ),
-                      onPressed: () async {
-                        selectImage = await UtilsApp.pickImageFromGallery();
-                        setState(() {
-                          //update UI
-                        });
-                        if (selectImage != null) {
-                          // ignore: use_build_context_synchronously
-                          context.read<SavePaymentBloc>().add(
-                              SavePaymentEvent.imageChangedMobile(
-                                  File(selectImage!.path)));
-                        }
-                      },
                       child: Container(
-                        height: 50,
-                        width: 180,
+                        height: 200,
+                        width: double.infinity,
                         alignment: FractionalOffset.center,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: ColorApp.primaryColor),
-                        child: Text(
-                          Strings.uploadBuktiPembayaran,
-                          style: FontApp.primaryStyle
-                              .copyWith(color: Colors.white),
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(20),
+                          shape: BoxShape.rectangle,
+                        ),
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          onPressed: () async {
+                            _paths = await UtilsApp.pickFileForWeb();
+                            setState(() {});
+                            if (_paths != null) {
+                              setState(() {
+                                bytes = _paths!.first.bytes;
+                              });
+                              // ignore: use_build_context_synchronously
+                              context.read<SavePaymentBloc>().add(
+                                  SavePaymentEvent.imageChangedWeb(bytes!));
+                            }
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 180,
+                            alignment: FractionalOffset.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: ColorApp.primaryColor),
+                            child: Text(
+                              Strings.uploadBuktiPembayaran,
+                              style: FontApp.primaryStyle
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-        } else {
-          return _paths == null
-              ? Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    shape: BoxShape.rectangle,
-                  ),
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    alignment: FractionalOffset.center,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: MaterialButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      onPressed: () async {
-                        _paths = await UtilsApp.pickFileForWeb();
-                        setState(() {});
-                        if (_paths != null) {
-                          setState(() {
-                            bytes = _paths!.first.bytes;
-                          });
-                          // ignore: use_build_context_synchronously
-                          context
-                              .read<SavePaymentBloc>()
-                              .add(SavePaymentEvent.imageChangedWeb(bytes!));
-                        }
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 180,
-                        alignment: FractionalOffset.center,
+                    );
+            } else {
+              if (!kIsWeb) {
+                return selectImage == null
+                    ? Container(
+                        width: double.infinity,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: ColorApp.primaryColor),
-                        child: Text(
-                          Strings.uploadBuktiPembayaran,
-                          style: FontApp.primaryStyle
-                              .copyWith(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20),
+                          shape: BoxShape.rectangle,
                         ),
-                      ),
-                    ),
-                  ),
-                )
-              : Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                        image: MemoryImage(_paths!.first.bytes!),
-                        fit: BoxFit.cover),
-                    shape: BoxShape.rectangle,
-                  ),
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    alignment: FractionalOffset.center,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(20),
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: MaterialButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      onPressed: () async {
-                        _paths = await UtilsApp.pickFileForWeb();
-                        setState(() {});
-                        if (_paths != null) {
-                          setState(() {
-                            bytes = _paths!.first.bytes;
-                          });
-                          // ignore: use_build_context_synchronously
-                          context
-                              .read<SavePaymentBloc>()
-                              .add(SavePaymentEvent.imageChangedWeb(bytes!));
-                        }
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 180,
-                        alignment: FractionalOffset.center,
+                        child: Container(
+                          height: 200,
+                          width: double.infinity,
+                          alignment: FractionalOffset.center,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(20),
+                            shape: BoxShape.rectangle,
+                          ),
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            onPressed: () async {
+                              selectImage =
+                                  await UtilsApp.pickImageFromGallery();
+                              setState(() {
+                                //update UI
+                              });
+                              if (selectImage != null) {
+                                // ignore: use_build_context_synchronously
+                                context.read<SavePaymentBloc>().add(
+                                    SavePaymentEvent.imageChangedMobile(
+                                        File(selectImage!.path)));
+                              }
+                            },
+                            child: Container(
+                              height: 50,
+                              width: 180,
+                              alignment: FractionalOffset.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: ColorApp.primaryColor),
+                              child: Text(
+                                Strings.uploadBuktiPembayaran,
+                                style: FontApp.primaryStyle
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 200,
+                        width: double.infinity,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: ColorApp.primaryColor),
-                        child: Text(
-                          Strings.uploadBuktiPembayaran,
-                          style: FontApp.primaryStyle
-                              .copyWith(color: Colors.white),
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                              image: FileImage(File(selectImage!.path)),
+                              fit: BoxFit.cover),
+                          shape: BoxShape.rectangle,
                         ),
-                      ),
-                    ),
-                  ),
-                );
-        }
-
-        /// end image container
+                        child: Container(
+                          height: 200,
+                          width: double.infinity,
+                          alignment: FractionalOffset.center,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(20),
+                            shape: BoxShape.rectangle,
+                          ),
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            onPressed: () async {
+                              selectImage =
+                                  await UtilsApp.pickImageFromGallery();
+                              setState(() {
+                                //update UI
+                              });
+                              if (selectImage != null) {
+                                // ignore: use_build_context_synchronously
+                                context.read<SavePaymentBloc>().add(
+                                    SavePaymentEvent.imageChangedMobile(
+                                        File(selectImage!.path)));
+                              }
+                            },
+                            child: Container(
+                              height: 50,
+                              width: 180,
+                              alignment: FractionalOffset.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: ColorApp.primaryColor),
+                              child: Text(
+                                Strings.uploadBuktiPembayaran,
+                                style: FontApp.primaryStyle
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+              } else {
+                return webFileModel == null
+                    ? Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          shape: BoxShape.rectangle,
+                        ),
+                        child: Container(
+                          height: 200,
+                          width: double.infinity,
+                          alignment: FractionalOffset.center,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(20),
+                            shape: BoxShape.rectangle,
+                          ),
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            onPressed: () async {
+                              webFileModel = await UtilsApp.pickWebFileModel();
+                              setState(() {
+                                //update UI
+                                final imageBase64 = webFileModel!.path
+                                    .replaceFirst(
+                                        RegExp(r'data:image/[^;]+;base64,'),
+                                        '');
+                                bytes = base64Decode(imageBase64);
+                              });
+                              if (webFileModel != null) {
+                                // ignore: use_build_context_synchronously
+                                context.read<SavePaymentBloc>().add(
+                                    SavePaymentEvent.imageChangedWeb(bytes!));
+                              }
+                            },
+                            child: Container(
+                              height: 50,
+                              width: 180,
+                              alignment: FractionalOffset.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: ColorApp.primaryColor),
+                              child: Text(
+                                Strings.uploadBuktiPembayaran,
+                                style: FontApp.primaryStyle
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 200,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                              image: MemoryImage(bytes!), fit: BoxFit.cover),
+                          shape: BoxShape.rectangle,
+                        ),
+                        child: Container(
+                          height: 200,
+                          width: double.infinity,
+                          alignment: FractionalOffset.center,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(20),
+                            shape: BoxShape.rectangle,
+                          ),
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            onPressed: () async {
+                              webFileModel = await UtilsApp.pickWebFileModel();
+                              setState(() {
+                                //update UI
+                                final imageBase64 = webFileModel!.path
+                                    .replaceFirst(
+                                        RegExp(r'data:image/[^;]+;base64,'),
+                                        '');
+                                bytes = base64Decode(imageBase64);
+                              });
+                              if (webFileModel != null) {
+                                // ignore: use_build_context_synchronously
+                                context.read<SavePaymentBloc>().add(
+                                    SavePaymentEvent.imageChangedWeb(bytes!));
+                              }
+                            },
+                            child: Container(
+                              height: 50,
+                              width: 180,
+                              alignment: FractionalOffset.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: ColorApp.primaryColor),
+                              child: Text(
+                                Strings.uploadBuktiPembayaran,
+                                style: FontApp.primaryStyle
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+              }
+            }
+          },
+        );
       },
     );
   }

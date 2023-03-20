@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:file_picker/file_picker.dart';
@@ -8,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:resource/resource/resource.dart';
 import 'package:sipmm/shared/assets.dart';
 import 'package:sipmm/shared/color_app.dart';
+import 'html_non_web.dart' if (dart.library.js) 'dart:html' as html;
+import 'web_view_model.dart';
 
 class UtilsApp {
   static showBottomSheet(BuildContext context, {Widget? child}) {
@@ -342,6 +345,34 @@ class UtilsApp {
                   width: width / n,
                 )),
     );
+  }
+
+  static Future<WebFileModel> pickWebFileModel() {
+    final completer = Completer<WebFileModel>();
+    final html.InputElement input =
+        html.document.createElement('input') as html.InputElement;
+    input
+      ..type = 'file'
+      ..accept = 'image/*';
+    input.onChange.listen((e) async {
+      final List<html.File> files = input.files!;
+      final reader = html.FileReader();
+      reader.readAsDataUrl(files.first);
+      reader.onError.listen(completer.completeError);
+      final Future<WebFileModel> resultsFutures =
+          reader.onLoad.first.then((_) => WebFileModel(
+                path: reader.result! as String,
+                type: files.first.type as String,
+                createdAt: DateTime.fromMillisecondsSinceEpoch(
+                  files.first.lastModified!,
+                ),
+                htmlFile: files.first,
+              ));
+      final results = await resultsFutures;
+      completer.complete(results);
+    });
+    input.click();
+    return completer.future;
   }
 
   static ImageProvider<Object> getImageProvider(
