@@ -8,19 +8,6 @@ class BodyAuthPage extends StatefulWidget {
 }
 
 class _BodyAuthPageState extends State<BodyAuthPage> {
-  /// text editing controller
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  ///
-  /// set dispose controller
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -158,6 +145,14 @@ class _EmailForm extends StatelessWidget {
             autofocus: true,
             onChanged: (value) =>
                 context.read<LoginBloc>().add(LoginEvent.emailChanged(value)),
+            validator: (value) =>
+                context.read<LoginBloc>().state.email.value.fold(
+                    (l) => l.maybeMap(
+                          orElse: () => null,
+                          invalidEmail: (value) => 'Invalid Email',
+                          empty: (value) => 'Cannot be empty',
+                        ),
+                    (r) => null),
           ),
         );
       },
@@ -214,6 +209,14 @@ class _PasswordForm extends StatelessWidget {
             onChanged: (value) => context
                 .read<LoginBloc>()
                 .add(LoginEvent.passwordChanged(value)),
+            validator: (value) =>
+                context.read<LoginBloc>().state.password.value.fold(
+                    (l) => l.maybeMap(
+                          orElse: () => null,
+                          invalidPassword: (value) => 'Invalid Password' ,
+                          empty: (value) => 'Cannot be empty',
+                        ),
+                    (r) => null),
           ),
         );
       },
